@@ -1,0 +1,176 @@
+*{
+    padding:0;
+    margin:0;
+    font-family: 'Comfortaa', cursive;
+}
+
+
+.main{
+    display:grid;
+    grid-template: 200px 1fr 40px/ 350px 1fr;
+    height:100vh;
+    width: 100vw;
+
+}
+
+.header{
+    display:flex;
+    grid-area: 1/1/2/3;
+    background-color: rgb(243, 166, 140);
+    padding: 10px 20px;
+    font-size: 2.5rem;
+    align-items: center;
+
+}
+
+.sidebar{
+    grid-area: 2/1/3/2;
+    background-color: rgb(224, 104, 104);/*rgb(54, 41, 41)*/
+    display:flex;
+    flex-direction: column;
+    width: calc(100% - 50px);
+    height: 100%;
+    padding-left: 20px;
+    padding-top: 20px ;
+    
+}
+
+.sidebar button{
+    width:300px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    height:40px;
+    margin-bottom: 15px;
+    text-align: left;
+    padding-left: 10px;
+    font-size: 2rem;
+}
+.sidebar button:hover{
+    background-color: rgb(236, 152, 152);
+    font-size: 2.3rem;
+    
+}
+
+.content{
+    grid-area: 2/2/3/3;
+    display:grid; 
+    grid-template: 100px 1fr/ 1fr 1fr ;
+    padding: 30px 0px 0px 25px;
+}
+.contentTitle{
+    grid-area: 1/1/2/2;
+    font-size: 3rem;
+}
+.contentSorter{
+    grid-area: 1/2/2/3;
+    display:flex;
+    margin-left:5px;
+    width: 700px;
+    height: 50px;
+    justify-content: flex-end;
+}
+.contentSorter button{
+    height: 40px;
+    width: 60px;
+    padding:10px;
+    box-shadow: 2px 2px 2px gray;
+    border: none;
+}
+.contentSorter button:hover{
+    background-color: rgb(204, 204, 204);
+}
+.contentSorter img{
+    height: 20px;
+    width: 30px;
+}
+.taskArea{
+    grid-area: 2/1/3/3;
+    width: 1000px;
+    max-height:800px;
+    overflow-y:scroll;
+    
+}
+
+/*Today list section*/
+.toDoForm{
+    width:300px;
+    height:400px;
+    background-color: rgb(255, 244, 244);
+    padding: 10px;
+    position:absolute;
+    left:1000px;
+}
+input{
+    border:none;
+    background-color: rgb(255, 195, 195);
+}
+textarea{
+    background-color: rgb(255, 195, 195);
+    max-width: 300px;
+    max-height: 300px;
+}
+fieldset{
+    background-color: none;
+    border: none;
+    display:flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.formButton{
+    height:50px;
+    width:50px;
+    border-radius: 100%;
+    font-size: 2rem;
+    position:absolute;
+    left:1000px;
+    border: none;
+}
+
+.task{
+    position: relative;
+    width: 600px;
+    height:80px;
+    display:grid;
+    grid-template-columns: 40px 1fr;
+    color:blue;
+    background-color: rgb(235, 235, 235);
+    box-shadow: 2px 2px rgb(192, 192, 192);
+    align-items: center;
+    padding:10px;
+    margin-left:100px;
+    margin-bottom: 10px;
+}
+.inEditing{
+    position: absolute;
+    left: 1020px;
+    height:200px;
+    border:dotted 2px black;
+}
+.checkbox{
+    height:20px;
+    width: 20px;
+    border-radius: 100%;
+}
+.checked{
+    background-color: red;
+
+}
+.delete{
+    width: 15px;
+    height: 15px;
+    color: red;
+    left:300px;
+    position:absolute;
+}
+
+
+
+
+.footer{
+    grid-area: 3/1/4/3;
+    background-color: black;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    text-align: center;
+}
