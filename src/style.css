@@ -95,7 +95,7 @@
 .toDoForm{
     width:300px;
     height:400px;
-    background-color: rgb(255, 244, 244);
+    background-color: rgb(255, 117, 117);
     padding: 10px;
     position:absolute;
     left:1000px;
@@ -127,6 +127,7 @@ fieldset{
     border: none;
 }
 
+/*Task properties*/
 .task{
     position: relative;
     width: 600px;
@@ -142,6 +143,9 @@ fieldset{
     margin-bottom: 10px;
 }
 .inEditing{
+    border: solid 2px black;
+}
+.editBox{
     position: absolute;
     left: 1020px;
     height:200px;

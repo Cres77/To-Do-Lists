@@ -1,11 +1,11 @@
 import "./style.css"
-import {toDoCreator, toDoFormCreator, toDoFormRemover, tasksArray, formActive, addTaskToHtml} from "./today.js"
+import {toDoCreator, toDoFormCreator, toDoFormRemover, tasksArray, formActive, addTaskToHtml} from "./tasks.js"
 
 let tasks = []
 
 const sidebar = document.querySelector(".sidebar")
 const pageSelector = (()=>{
-    function buttonSelectorVisuals(button){
+    function buttonSelectorVisuals(button){//denotes which section is chosen on sidebar
         const sidebarChildren = sidebar.getElementsByTagName("button");
             for(var i=0; i<sidebarChildren.length; i++) {
                 sidebarChildren[i].style.backgroundColor = "";
@@ -15,10 +15,11 @@ const pageSelector = (()=>{
         button.classList.add("contentTitleChosen")
     }
 
-    function tabChange(){
+    function tabChange(){//Denotes current page on content area
         const contentTitleChosen = document.querySelector(".contentTitleChosen")
         contentTitle.textContent = contentTitleChosen.textContent
     }
+
     return{
         buttonSelectorVisuals,
         tabChange
@@ -26,7 +27,7 @@ const pageSelector = (()=>{
 })()
 
 
-
+//Sidebar buttons
 const todayButton = document.querySelector(".todayButton")
     todayButton.addEventListener("click",()=>{
         pageSelector.buttonSelectorVisuals(todayButton)
@@ -57,6 +58,7 @@ const projectsButton = document.querySelector(".projectsButton")
 
 const content = document.querySelector(".content")
 
+//Sorts tasks based off selection
 const contentSorter = document.createElement("div")
 contentSorter.classList.add("contentSorter")
 
