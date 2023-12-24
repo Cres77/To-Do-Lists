@@ -9,21 +9,21 @@ const content = document.querySelector(".content")
 //Form Creator
 function toDoFormCreator(){
     formActive = true
-    const toDoForm = document.createElement("form")
+    const toDoForm = document.createElement("form")//Create Form
     toDoForm.classList.add("toDoForm")
 
-    const nameDiv = document.createElement("fieldset")
+    const nameDiv = document.createElement("fieldset")//Name Field
     const taskNameLabel = document.createElement("label")
     taskNameLabel.textContent = "Task"
-    const taskNameInput = document.createElement("input")
+    const taskNameInput = document.createElement("input")//Name input
     taskNameInput.classList.add("taskName")
 
-    const descDiv = document.createElement("fieldset")
+    const descDiv = document.createElement("fieldset")//Desc Field
     const taskDescLabel = document.createElement("label")
-    taskDescLabel.classList.add("taskDesc")
     taskDescLabel.textContent = "Description"
-    const taskDescInput = document.createElement("textarea")
+    const taskDescInput = document.createElement("textArea")//Desc input
     taskDescInput.style.height = "100px"
+    taskDescInput.classList.add("taskDesc")
     
     const submit = document.createElement("button")
     submit.addEventListener("click",(e)=>{
@@ -68,10 +68,12 @@ function requireName(){ //Requires Task name before allowing a submission
 //TaskCreator
 function toDoCreator(name, description){
     let taskName = name
-    let desc = description
+    let taskDesc = description
+
+   
     return{
         taskName,
-        desc
+        taskDesc
     }
 }
 
@@ -88,14 +90,19 @@ function addTaskToHtml(){// add task
         const taskName = document.createElement("h2")
         taskName.textContent = tasksArray[numPlacement-1].taskName
 
+        const taskDesc = document.createElement("div")
+        taskDesc.textContent = tasksArray[numPlacement-1].taskDesc
+
 
         //Delete button will appear when hovering
-        const deleteTask = document.createElement("div")
+        const deleteTask = document.createElement("button")
+        deleteTask.textContent = "X"
         deleteTask.classList.add("delete")
         
         task.appendChild(deleteTask)
         task.appendChild(checkbox)
         task.appendChild(taskName)
+        task.appendChild(taskDesc)//temporary
         tasksArea.appendChild(task)
         viewTasks()
 }
@@ -115,7 +122,7 @@ function viewTasks(){// View full task
 
                 if(inEdit == false){
                     task.classList.add("inEditing")
-                    console.log(task.taskName,taskplace.desc)
+                    console.log(task.taskName,task.taskDesc)
                     editTasks(task.taskName, task.desc)
                     inEdit = true
                 }
@@ -124,9 +131,9 @@ function viewTasks(){// View full task
     });
 }
 
-function editTasks(taskName, taskDesc, taskDate){
+function editTasks(taskName, taskDesc){//Edit task
     const fullTask = document.createElement("div")
-
+    
 
 }
 

@@ -164,8 +164,16 @@ fieldset{
     width: 15px;
     height: 15px;
     color: red;
-    left:300px;
+    left:600px;
     position:absolute;
+    font-weight:800px;
+    border-radius: 10px;
+    border:none;
+    text-align: center;
+}
+.delete:hover{
+    border: solid white;
+    box-shadow: 1px 1px 5px gray;
 }
 
 
