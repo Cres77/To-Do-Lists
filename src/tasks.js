@@ -79,7 +79,7 @@ function toDoCreator(name, description){
 
 function addTaskToHtml(){// add task
     const tasksArea = document.querySelector(".tasksArea")
-    let numPlacement = tasksArray.length
+    let numPlacement = tasksArray.length - 1
         const task = document.createElement("div")
         task.classList.add("task")
         task.setAttribute("data-key", numPlacement)
@@ -88,10 +88,10 @@ function addTaskToHtml(){// add task
         checkbox.classList.add("checkbox")
 
         const taskName = document.createElement("h2")
-        taskName.textContent = tasksArray[numPlacement-1].taskName
+        taskName.textContent = tasksArray[numPlacement].taskName
 
         const taskDesc = document.createElement("div")
-        taskDesc.textContent = tasksArray[numPlacement-1].taskDesc
+        taskDesc.textContent = tasksArray[numPlacement].taskDesc
 
 
         //Delete button will appear when hovering
@@ -118,11 +118,11 @@ function viewTasks(){// View full task
                 return
             }
             else{
-                let taskplace = task.getAttribute("data-key")
+                let taskPlace = task.getAttribute("data-key")
+                let currentTask = tasksArray[taskPlace]
 
                 if(inEdit == false){
                     task.classList.add("inEditing")
-                    console.log(task.taskName,task.taskDesc)
                     editTasks(task.taskName, task.desc)
                     inEdit = true
                 }
@@ -133,7 +133,7 @@ function viewTasks(){// View full task
 
 function editTasks(taskName, taskDesc){//Edit task
     const fullTask = document.createElement("div")
-    
+    fullTask.classList.add("editBox")
 
 }
 

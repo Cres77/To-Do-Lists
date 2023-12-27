@@ -142,15 +142,7 @@ fieldset{
     margin-left:100px;
     margin-bottom: 10px;
 }
-.inEditing{
-    border: solid 2px black;
-}
-.editBox{
-    position: absolute;
-    left: 1020px;
-    height:200px;
-    border:dotted 2px black;
-}
+
 .checkbox{
     height:20px;
     width: 20px;
@@ -176,6 +168,24 @@ fieldset{
     box-shadow: 1px 1px 5px gray;
 }
 
+/*Edit*/
+.inEditin{
+    border: solid 2px black;
+}
+.viewBox{
+
+}
+
+/*View*/
+.inViewing{
+    
+}
+.viewBox{
+    position: absolute;
+    left: 1020px;
+    height:200px;
+    border:dotted 2px black;
+}
 
 
 
