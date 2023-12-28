@@ -61,6 +61,7 @@ function requireName(){ //Requires Task name before allowing a submission
         addTaskToHtml()
         toDoFormRemover() 
         checklist()
+        deleteTasks()
     } 
 }
 
@@ -100,12 +101,14 @@ function addTaskToHtml(){// add task
         deleteTask.textContent = "X"
         deleteTask.classList.add("delete")
         
+        
         task.appendChild(deleteTask)
         task.appendChild(checkbox)
         task.appendChild(taskName)
         task.appendChild(taskDesc)//temporary
         tasksArea.appendChild(task)
         viewTasks()
+        
 }
 
 function viewTasks(){// View full task
@@ -127,7 +130,7 @@ function viewTasks(){// View full task
                         const fullTask = document.createElement("div")
                         fullTask.classList.add("viewBox")
                 
-                    gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
+                    //gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
                     
                     task.appendChild(fullTask)
                     inView = true
@@ -139,12 +142,11 @@ function viewTasks(){// View full task
 
 function gatherTaskInfo(taskName, taskDesc){//Creates div that shows all info
     const fullTask = document.getElementById("viewBox")
-    fullTask.textContent = taskName + " " + taskDesc
-}
+    //fullTask.textContent = taskName + " " + taskDesc
 
-function editTasks(){//Enter Edit Mode
 
 }
+
 
 
 document.addEventListener("click",(e)=>{ //Remove editing
@@ -163,7 +165,7 @@ document.addEventListener("click",(e)=>{ //Remove editing
             inView = false
             task.classList.remove("inViewing")
             //document.querySelector("")
-    }) 
+    })
     }
 })
 
@@ -176,3 +178,25 @@ function checklist(){//checklist ability
         })
     })
 }
+
+
+
+function deleteTasks(){//Deletes Task
+    const deleteButtons = document.querySelectorAll(".delete")      //selects delete class
+    deleteButtons.forEach(dButton=>{
+        dButton.addEventListener("click",(e)=>{
+            
+            let focusedTask = dButton.closest(".task")        
+            let taskPlace = focusedTask.getAttribute("data-key")    
+
+            tasksArray.splice(taskPlace,1)                          //removes from array and from DOM
+            focusedTask.remove()
+        }
+    )}
+    )
+
+
+    
+    
+}
+
