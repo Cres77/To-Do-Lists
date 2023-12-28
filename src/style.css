@@ -169,21 +169,23 @@ fieldset{
 }
 
 /*Edit*/
-.inEditin{
+.inEditing{
     border: solid 2px black;
 }
-.viewBox{
+#editBox{
 
 }
 
 /*View*/
 .inViewing{
-    
+    border: solid 2px black;
+
 }
-.viewBox{
+#viewBox{
     position: absolute;
     left: 1020px;
     height:200px;
+    width:200px;
     border:dotted 2px black;
 }
 

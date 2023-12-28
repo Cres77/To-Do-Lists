@@ -2,6 +2,7 @@ export {toDoCreator, toDoFormCreator, toDoFormRemover, addTaskToHtml }
 export const tasksArray = []
 export let formActive = false
 let inEdit = false
+let inView = false
 const tasksArea = document.querySelector(".tasksArea")
 const content = document.querySelector(".content")
 
@@ -66,9 +67,9 @@ function requireName(){ //Requires Task name before allowing a submission
 
 
 //TaskCreator
-function toDoCreator(name, description){
+function toDoCreator(name, desc){
     let taskName = name
-    let taskDesc = description
+    let taskDesc = desc
 
    
     return{
@@ -121,35 +122,46 @@ function viewTasks(){// View full task
                 let taskPlace = task.getAttribute("data-key")
                 let currentTask = tasksArray[taskPlace]
 
-                if(inEdit == false){
-                    task.classList.add("inEditing")
-                    editTasks(task.taskName, task.desc)
-                    inEdit = true
+                if(inView == false){
+                    task.classList.add("inViewing")
+                        const fullTask = document.createElement("div")
+                        fullTask.classList.add("viewBox")
+                
+                    gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
+                    
+                    task.appendChild(fullTask)
+                    inView = true
                 }
             }
         })
     });
 }
 
-function editTasks(taskName, taskDesc){//Edit task
-    const fullTask = document.createElement("div")
-    fullTask.classList.add("editBox")
+function gatherTaskInfo(taskName, taskDesc){//Creates div that shows all info
+    const fullTask = document.getElementById("viewBox")
+    fullTask.textContent = taskName + " " + taskDesc
+}
+
+function editTasks(){//Enter Edit Mode
 
 }
 
 
 document.addEventListener("click",(e)=>{ //Remove editing
-    if(e.target.closest(".inEditing")){
+    if(e.target.closest(".inViewing")){
         return
     }
     else if(e.target.closest(".toDoForm")){
         return
     }
     else{
-        const tasks = document.querySelectorAll(".task")
+        const viewBox = document.getElementById("viewBox")
+
+
+        const tasks = document.querySelectorAll(".task")//Removes inViewing class
         tasks.forEach(task =>{
-            inEdit = false
-            task.classList.remove("inEditing")
+            inView = false
+            task.classList.remove("inViewing")
             //document.querySelector("")
     }) 
     }
