@@ -62,6 +62,7 @@ function requireName(){ //Requires Task name before allowing a submission
         toDoFormRemover() 
         checklist()
         deleteTasks()
+        showDelete()
     } 
 }
 
@@ -128,7 +129,7 @@ function viewTasks(){// View full task
                 if(inView == false){
                     task.classList.add("inViewing")
                         const fullTask = document.createElement("div")
-                        fullTask.classList.add("viewBox")
+                        fullTask.setAttribute("id", "viewBox")
                 
                     //gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
                     
@@ -156,16 +157,14 @@ document.addEventListener("click",(e)=>{ //Remove editing
     else if(e.target.closest(".toDoForm")){
         return
     }
-    else{
-        const viewBox = document.getElementById("viewBox")
-
-
+    else if(inView == true){
+        const viewBox = document.getElementById("viewBox")//Removes viewBox
+        viewBox.remove()
         const tasks = document.querySelectorAll(".task")//Removes inViewing class
         tasks.forEach(task =>{
             inView = false
             task.classList.remove("inViewing")
-            //document.querySelector("")
-    })
+        })
     }
 })
 
@@ -184,7 +183,7 @@ function checklist(){//checklist ability
 function deleteTasks(){//Deletes Task
     const deleteButtons = document.querySelectorAll(".delete")      //selects delete class
     deleteButtons.forEach(dButton=>{
-        dButton.addEventListener("click",(e)=>{
+        dButton.addEventListener("click",()=>{
             
             let focusedTask = dButton.closest(".task")        
             let taskPlace = focusedTask.getAttribute("data-key")    
@@ -194,9 +193,22 @@ function deleteTasks(){//Deletes Task
         }
     )}
     )
+}
 
-
-    
-    
+function showDelete(){//Shows and Hides delete button
+    const tasks = document.querySelectorAll(".task")
+    const deleteButtons = document.querySelectorAll(".delete")  
+        tasks.forEach(task=>{
+            task.addEventListener("mouseover",()=>{//When hovering task grant visibility
+                deleteButtons.forEach(dButton=>{
+                    dButton.setAttribute("id","deleteVisible")
+                })
+            })
+            task.addEventListener("mouseout",()=>{//When not hovering task remove visibility
+                deleteButtons.forEach(dButton=>{
+                    dButton.removeAttribute("id","deleteVisible")
+                })
+            })
+        })
 }
 

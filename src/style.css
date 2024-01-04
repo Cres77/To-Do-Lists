@@ -131,9 +131,9 @@ fieldset{
 .task{
     position: relative;
     width: 600px;
-    height:80px;
+    height:60px;
     display:grid;
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 40px 300px 150px 1fr;
     color:blue;
     background-color: rgb(235, 235, 235);
     box-shadow: 2px 2px rgb(192, 192, 192);
@@ -158,14 +158,21 @@ fieldset{
     color: red;
     left:600px;
     position:absolute;
-    font-weight:800px;
+    font-weight:800;
     border-radius: 10px;
     border:none;
     text-align: center;
+    visibility: hidden;
 }
 .delete:hover{
     border: solid white;
     box-shadow: 1px 1px 5px gray;
+}
+#deleteVisible{
+    visibility: visible;
+}
+.date{
+
 }
 
 /*Edit*/
@@ -182,11 +189,13 @@ fieldset{
 
 }
 #viewBox{
-    position: absolute;
-    left: 1020px;
-    height:200px;
-    width:200px;
-    border:dotted 2px black;
+    position: fixed;
+    left: 1220px;
+    top: 320px;
+    height:400px;
+    width:400px;
+    border:solid 2px black;
+    background-color: blanchedalmond;
 }
 
 
