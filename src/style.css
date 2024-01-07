@@ -197,6 +197,24 @@ fieldset{
     border:solid 2px black;
     background-color: blanchedalmond;
 }
+#viewTitle{
+    justify-content: center;
+    width:350px;
+    height:30px;
+    padding:20px;
+    margin-bottom:20px;
+}
+#viewTitle:focus,
+#viewDesc:focus{
+    border:solid 2px black;
+
+}
+#viewDesc{
+    width:300px;
+    height:300px;
+    padding:20px;
+}
+
 
 
 

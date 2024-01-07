@@ -128,12 +128,10 @@ function viewTasks(){// View full task
 
                 if(inView == false){
                     task.classList.add("inViewing")
-                        const fullTask = document.createElement("div")
-                        fullTask.setAttribute("id", "viewBox")
                 
-                    //gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
+                    gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
                     
-                    task.appendChild(fullTask)
+                    
                     inView = true
                 }
             }
@@ -142,19 +140,32 @@ function viewTasks(){// View full task
 }
 
 function gatherTaskInfo(taskName, taskDesc){//Creates div that shows all info
-    const fullTask = document.getElementById("viewBox")
-    //fullTask.textContent = taskName + " " + taskDesc
+    const fullTask = document.createElement("div")
+                        fullTask.setAttribute("id", "viewBox")
 
+    const viewTitle = document.createElement("h2")
+        viewTitle.setAttribute("id","viewTitle")
+        viewTitle.textContent = taskName
 
+    const viewDesc = document.createElement("div")
+        viewDesc.setAttribute("id","viewDesc")
+        viewDesc.textContent = taskDesc
+
+    fullTask.appendChild(viewTitle)
+    fullTask.appendChild(viewDesc)
+    content.appendChild(fullTask)
 }
 
 
 
-document.addEventListener("click",(e)=>{ //Remove editing
+document.addEventListener("click",(e)=>{ //Remove viewing
     if(e.target.closest(".inViewing")){
         return
     }
     else if(e.target.closest(".toDoForm")){
+        return
+    }
+    else if(e.target.closest("#viewBox")){
         return
     }
     else if(inView == true){
