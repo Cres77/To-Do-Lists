@@ -106,7 +106,7 @@ function addTaskToHtml(){// add task
         task.appendChild(deleteTask)
         task.appendChild(checkbox)
         task.appendChild(taskName)
-        task.appendChild(taskDesc)//temporary
+        //task.appendChild(taskDesc)//temporary
         tasksArea.appendChild(task)
         viewTasks()
         
@@ -126,31 +126,32 @@ function viewTasks(){// View full task
                 let taskPlace = task.getAttribute("data-key")
                 let currentTask = tasksArray[taskPlace]
 
-                if(inView == false){
+                if(inView == false){//gives class view to task and opens view div
                     task.classList.add("inViewing")
                 
-                    gatherTaskInfo(currentTask.taskName, currentTask.taskDesc)
+                    createViewDiv(currentTask.taskName, currentTask.taskDesc)
                     
-                    
-                    inView = true
+                    inView = true 
                 }
             }
         })
     });
 }
 
-function gatherTaskInfo(taskName, taskDesc){//Creates div that shows all info
+function createViewDiv(taskName, taskDesc){//Creates div that shows all info in html
     const fullTask = document.createElement("div")
-                        fullTask.setAttribute("id", "viewBox")
+        fullTask.setAttribute("id", "viewBox")
 
     const viewTitle = document.createElement("h2")
         viewTitle.setAttribute("id","viewTitle")
+        viewTitle.setAttribute("contenteditable","true")
         viewTitle.textContent = taskName
 
     const viewDesc = document.createElement("div")
         viewDesc.setAttribute("id","viewDesc")
+        viewDesc.setAttribute("contenteditable","true")
         viewDesc.textContent = taskDesc
-
+        
     fullTask.appendChild(viewTitle)
     fullTask.appendChild(viewDesc)
     content.appendChild(fullTask)

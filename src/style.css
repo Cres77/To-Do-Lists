@@ -198,11 +198,12 @@ fieldset{
     background-color: blanchedalmond;
 }
 #viewTitle{
-    justify-content: center;
+    justify-items: center;
     width:350px;
     height:30px;
     padding:20px;
     margin-bottom:20px;
+    max-width:350px;
 }
 #viewTitle:focus,
 #viewDesc:focus{
@@ -210,11 +211,11 @@ fieldset{
 
 }
 #viewDesc{
-    width:300px;
+    width:350px;
     height:300px;
-    padding:20px;
+    padding: 10px 25px 0px 25px ;
+    word-break:break-all;
 }
-
 
 
 
