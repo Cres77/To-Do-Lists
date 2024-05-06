@@ -1,4 +1,7 @@
-export {toDoCreator, toDoFormCreator, toDoFormRemover, addTaskToHtml }
+//Creates tasks
+//Controls the tasks on Today and Upcoming
+
+export {toDoCreator, toDoFormCreator, toDoFormRemover, addTaskToHtml, tasksPage }
 export const tasksArray = []
 export let formActive = false
 let inEdit = false
@@ -6,23 +9,37 @@ let inView = false
 const tasksArea = document.querySelector(".tasksArea")
 const content = document.querySelector(".content")
 
+//Adds task page specific functionalities
+function tasksPage(){
 
-//Form Creator
+    tasksSorters()
+    formButton()
+
+}
+
+
+//Form Creator 
 function toDoFormCreator(){
     formActive = true
-    const toDoForm = document.createElement("form")//Create Form
+
+    //Create Form
+    const toDoForm = document.createElement("form")
     toDoForm.classList.add("toDoForm")
 
-    const nameDiv = document.createElement("fieldset")//Name Field
+    //Name Field
+    const nameDiv = document.createElement("fieldset")
     const taskNameLabel = document.createElement("label")
     taskNameLabel.textContent = "Task"
-    const taskNameInput = document.createElement("input")//Name input
+    //Name input
+    const taskNameInput = document.createElement("input")
     taskNameInput.classList.add("taskName")
 
-    const descDiv = document.createElement("fieldset")//Desc Field
+    //Desc Field
+    const descDiv = document.createElement("fieldset")
     const taskDescLabel = document.createElement("label")
     taskDescLabel.textContent = "Description"
-    const taskDescInput = document.createElement("textArea")//Desc input
+    //Desc input
+    const taskDescInput = document.createElement("textArea")
     taskDescInput.style.height = "100px"
     taskDescInput.classList.add("taskDesc")
     
@@ -45,11 +62,13 @@ function toDoFormCreator(){
     content.appendChild(toDoForm)
 
 }
-function toDoFormRemover(){// Removes form
+// Removes form
+function toDoFormRemover(){
     formActive = false
     const form = document.querySelector("form").remove()
 }
-function requireName(){ //Requires Task name before allowing a submission
+//Requires Task name before allowing a submission
+function requireName(){ 
     const taskNameInput = document.querySelector(".taskName")
     const taskDescInput = document.querySelector(".taskDesc")
     if(taskNameInput.value == ""){
@@ -66,6 +85,61 @@ function requireName(){ //Requires Task name before allowing a submission
     } 
 }
 
+//Creates Tasks sorters and contains their functionalities
+function tasksSorters(){
+
+    //Sorts tasks based off selection
+    const contentSorter = document.createElement("div")
+    contentSorter.classList.add("contentSorter")
+
+    //Sorts by priority
+    const prioritySort = document.createElement("button")
+    const priorityImg = document.createElement("img")
+    priorityImg.setAttribute("src","https://seekicon.com/free-icon-download/list-stars_1.svg")
+
+    //Sorts alphabetically
+    const alphabeticallySort = document.createElement("button")
+    const alphabeticallyImg = document.createElement("img")
+    alphabeticallyImg.setAttribute("src","https://seekicon.com/free-icon-download/ordered-list_3.svg")
+
+    //Sorts by oldest
+    const oldestSort = document.createElement("button")
+    const oldestImg = document.createElement("img")
+    oldestImg.setAttribute("src","https://static-00.iconduck.com/assets.00/sort-calendar-descending-icon-512x402-bgm72yjs.png")
+    //const oldestSort = document.createElement("button")
+
+    prioritySort.appendChild(priorityImg)
+    alphabeticallySort.appendChild(alphabeticallyImg)
+    oldestSort.appendChild(oldestImg)
+
+    contentSorter.appendChild(prioritySort)
+    contentSorter.appendChild(alphabeticallySort)
+    contentSorter.appendChild(oldestSort)
+
+    content.appendChild(contentSorter)
+}
+
+//Creates form button for making new tasks
+function formButton(){
+
+    const formButton = document.createElement("button")
+    formButton.textContent = "+"
+    formButton.classList.add("formButton")
+
+    //Determines if a form is active when button is clicked
+    formButton.addEventListener("click",()=>{
+        if(formActive==true){
+            return
+        }
+        else{
+            toDoFormCreator()
+               
+        }    
+    })
+
+    content.appendChild(formButton)
+}
+
 
 
 //TaskCreator
@@ -80,42 +154,46 @@ function toDoCreator(name, desc){
     }
 }
 
-function addTaskToHtml(){// add task
+//Add task 
+function addTaskToHtml(){
     const tasksArea = document.querySelector(".tasksArea")
     let numPlacement = tasksArray.length - 1
-        const task = document.createElement("div")
-        task.classList.add("task")
-        task.setAttribute("data-key", numPlacement)
 
-        const checkbox = document.createElement("button")
-        checkbox.classList.add("checkbox")
+    const task = document.createElement("div")
+    task.classList.add("task")
+    task.setAttribute("data-key", numPlacement)
 
-        const taskName = document.createElement("h2")
-        taskName.textContent = tasksArray[numPlacement].taskName
+    const checkbox = document.createElement("button")
+    checkbox.classList.add("checkbox")
 
-        const taskDesc = document.createElement("div")
-        taskDesc.textContent = tasksArray[numPlacement].taskDesc
+    const taskName = document.createElement("h2")
+    taskName.textContent = tasksArray[numPlacement].taskName
+
+    const taskDesc = document.createElement("div")
+    taskDesc.textContent = tasksArray[numPlacement].taskDesc
 
 
-        //Delete button will appear when hovering
-        const deleteTask = document.createElement("button")
-        deleteTask.textContent = "X"
-        deleteTask.classList.add("delete")
+    //Delete button will appear when hovering
+    const deleteTask = document.createElement("button")
+    deleteTask.textContent = "X"
+    deleteTask.classList.add("delete")
         
         
-        task.appendChild(deleteTask)
-        task.appendChild(checkbox)
-        task.appendChild(taskName)
-        //task.appendChild(taskDesc)//temporary
-        tasksArea.appendChild(task)
-        viewTasks()
+    task.appendChild(deleteTask)
+    task.appendChild(checkbox)
+    task.appendChild(taskName)
+    //task.appendChild(taskDesc)//temporary
+    tasksArea.appendChild(task)
+    viewTasks()
         
 }
 
-function viewTasks(){// View full task
+// View full task
+function viewTasks(){
     const tasks = document.querySelectorAll(".task")
     tasks.forEach(task => {
-        task.addEventListener("click",(e)=>{//open edit div
+        //opens edit div
+        task.addEventListener("click",(e)=>{
             if(e.target.closest == ".checkbox"){
                 return
             }
@@ -126,7 +204,8 @@ function viewTasks(){// View full task
                 let taskPlace = task.getAttribute("data-key")
                 let currentTask = tasksArray[taskPlace]
 
-                if(inView == false){//gives class view to task and opens view div
+                //gives class view to task and opens viewable div
+                if(inView == false){
                     task.classList.add("inViewing")
                 
                     createViewDiv(currentTask.taskName, currentTask.taskDesc)
@@ -138,7 +217,8 @@ function viewTasks(){// View full task
     });
 }
 
-function createViewDiv(taskName, taskDesc){//Creates div that shows all info in html
+//Creates div that shows all info to user
+function createViewDiv(taskName, taskDesc){
     const fullTask = document.createElement("div")
         fullTask.setAttribute("id", "viewBox")
 
@@ -158,8 +238,8 @@ function createViewDiv(taskName, taskDesc){//Creates div that shows all info in 
 }
 
 
-
-document.addEventListener("click",(e)=>{ //Remove viewing
+//Remove viewing class
+document.addEventListener("click",(e)=>{ 
     if(e.target.closest(".inViewing")){
         return
     }
@@ -170,9 +250,11 @@ document.addEventListener("click",(e)=>{ //Remove viewing
         return
     }
     else if(inView == true){
-        const viewBox = document.getElementById("viewBox")//Removes viewBox
+        //Removes viewBox
+        const viewBox = document.getElementById("viewBox")
         viewBox.remove()
-        const tasks = document.querySelectorAll(".task")//Removes inViewing class
+        //Removes inViewing class
+        const tasks = document.querySelectorAll(".task")
         tasks.forEach(task =>{
             inView = false
             task.classList.remove("inViewing")
@@ -180,7 +262,8 @@ document.addEventListener("click",(e)=>{ //Remove viewing
     }
 })
 
-function checklist(){//checklist ability
+//checklist ability
+function checklist(){
     const checkboxes = document.querySelectorAll(".checkbox")
     checkboxes.forEach(checkbox=>{
         checkbox.addEventListener("click",(e)=>{
@@ -190,37 +273,48 @@ function checklist(){//checklist ability
     })
 }
 
+//Adds task deletability
+function deleteTasks(){
 
-
-function deleteTasks(){//Deletes Task
-    const deleteButtons = document.querySelectorAll(".delete")      //selects delete class
+    //selects delete class
+    const deleteButtons = document.querySelectorAll(".delete")      
     deleteButtons.forEach(dButton=>{
         dButton.addEventListener("click",()=>{
             
             let focusedTask = dButton.closest(".task")        
-            let taskPlace = focusedTask.getAttribute("data-key")    
+            let taskPlace = focusedTask.getAttribute("data-key")   
 
-            tasksArray.splice(taskPlace,1)                          //removes from array and from DOM
+            //removes from array and from DOM
+            tasksArray.splice(taskPlace,1)                          
             focusedTask.remove()
         }
-    )}
-    )
+    )})
 }
 
-function showDelete(){//Shows and Hides delete button
+//Shows and Hides delete button
+function showDelete(){
     const tasks = document.querySelectorAll(".task")
     const deleteButtons = document.querySelectorAll(".delete")  
-        tasks.forEach(task=>{
-            task.addEventListener("mouseover",()=>{//When hovering task grant visibility
-                deleteButtons.forEach(dButton=>{
-                    dButton.setAttribute("id","deleteVisible")
-                })
-            })
-            task.addEventListener("mouseout",()=>{//When not hovering task remove visibility
-                deleteButtons.forEach(dButton=>{
-                    dButton.removeAttribute("id","deleteVisible")
-                })
+    tasks.forEach(task=>{
+
+        //When hovering task grant visibility
+        task.addEventListener("mouseover",()=>{
+            deleteButtons.forEach(dButton=>{
+                dButton.setAttribute("id","deleteVisible")
             })
         })
+
+        //When not hovering task remove visibility
+        task.addEventListener("mouseout",()=>{
+            deleteButtons.forEach(dButton=>{
+                dButton.removeAttribute("id","deleteVisible")
+            })
+        })
+    })
 }
+
+
+
+
+
 
