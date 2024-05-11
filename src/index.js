@@ -2,11 +2,7 @@
 //Controls the functionality of the Sidebar and calls for the display of pages
 
 import "./style.css"
-import {toDoCreator, toDoFormCreator, toDoFormRemover, tasksArray, formActive, addTaskToHtml, tasksPage} from "./tasks.js"
-
-let tasks = []
-
-
+import {tasksArray, formActive, tasksPage} from "./tasks.js"
 
 tasksPage()
 
@@ -41,7 +37,7 @@ const pageSelector = (()=>{
         tabTextChange()
 
         if(contentTitle.textContent == "To-Do"){
-            // tasksPage()
+            tasksPage()
 
         }
         else if(contentTitle.textContent == "Habits"){

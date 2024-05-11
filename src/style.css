@@ -153,9 +153,10 @@ fieldset{
 
 }
 .delete{
-    width: 15px;
-    height: 15px;
-    color: red;
+    width: 35px;
+    height: 35px;
+    color: white;
+    background-color: rgb(199, 0, 0);
     left:600px;
     position:absolute;
     font-weight:800;
