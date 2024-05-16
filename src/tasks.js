@@ -1,22 +1,12 @@
 //Creates tasks
-//Controls the tasks on Today and Upcoming
-
-export {toDoFormCreator, toDoFormRemover, addTaskToHtml, tasksPage }
+//Controls the tasks on To-Do
+import { addYears, formatWithOptions } from "date-fns/fp";
+export {toDoFormCreator, tasksOnContent}
 export const tasksArray = []
 export let formActive = false
-let inEdit = false
 let inView = false
 let numTasks = 0
-const tasksArea = document.querySelector(".tasksArea")
 const content = document.querySelector(".content")
-
-//Adds task page specific functionalities
-function tasksPage(){
-
-    tasksSorters()
-    formButton()
-
-}
 
 //Form Creator 
 function toDoFormCreator(){
@@ -30,6 +20,7 @@ function toDoFormCreator(){
     const nameDiv = document.createElement("fieldset")
     const taskNameLabel = document.createElement("label")
     taskNameLabel.textContent = "Task"
+    taskNameLabel.color = "#B87333"
     //Name input
     const taskNameInput = document.createElement("input")
     taskNameInput.classList.add("taskName")
@@ -38,17 +29,61 @@ function toDoFormCreator(){
     const descDiv = document.createElement("fieldset")
     const taskDescLabel = document.createElement("label")
     taskDescLabel.textContent = "Description"
+    taskDescLabel.color = "#B87333"
     //Desc input
     const taskDescInput = document.createElement("textArea")
     taskDescInput.style.height = "100px"
     taskDescInput.classList.add("taskDesc")
+
+    //Priority & Date
+    const prio_date = document.createElement("div")
+
+    const prioDiv = document.createElement("div")
+    prioDiv.id = "prioDiv"
+
+    const prioTitle = document.createElement("h2")
+    prioTitle.textContent = "Task Priority"
+
+    const high = document.createElement("button")
+    high.id = "high"
+    high.textContent = "High"
     
+    const medium = document.createElement("button")
+    medium.id = "medium"
+    medium.textContent = "Med"
+
+    const low = document.createElement("button")
+    low.id = "low"
+    low.classList.add("chosenPriority")
+    low.textContent = "Low"
+
+    //Submit and Discard buttons
     const submit = document.createElement("button")
+    submit.id = "submit"
+    submit.textContent = "Submit"
     submit.addEventListener("click",(e)=>{
+
         e.preventDefault()
         requireName()
     })
-    submit.textContent = "submit"
+
+    const discard = document.createElement("button")
+    discard.id = "discard"
+    discard.textContent = "Discard"
+    discard.addEventListener("click",(e)=>{
+
+        e.preventDefault()
+        toDoFormRemover()
+    })
+
+    //Appendings
+    prioDiv.appendChild(prioTitle)
+    prioDiv.appendChild(high)
+    prioDiv.appendChild(medium)
+    prioDiv.appendChild(low)
+
+    prio_date.appendChild(prioDiv)
+    //prio_date.appendChild(prioDiv)
 
     nameDiv.appendChild(taskNameLabel)
     nameDiv.appendChild(taskNameInput)
@@ -57,9 +92,13 @@ function toDoFormCreator(){
 
     toDoForm.appendChild(nameDiv)
     toDoForm.appendChild(descDiv)
+    toDoForm.appendChild(prio_date)
     toDoForm.appendChild(submit)
+    toDoForm.appendChild(discard)
 
     content.appendChild(toDoForm)
+
+    priorityChooser.formPriority()
 
 }
 
@@ -73,158 +112,200 @@ function toDoFormRemover(){
 function requireName(){ 
     const taskNameInput = document.querySelector(".taskName")
     const taskDescInput = document.querySelector(".taskDesc")
+
     if(taskNameInput.value == ""){
+
         taskNameInput.style.border = "solid 1px red"
     }
     else{
         
-        let task = taskContents(taskNameInput.value, taskDescInput.value, numTasks)
+        let priority = document.querySelector(".chosenPriority").textContent
+        let task = taskContents(taskNameInput.value, taskDescInput.value, numTasks, priority)
         tasksArray.push(task)
         toDoFormRemover() 
         
 
         addTaskToHtml()
-        checklist()
-        deleteTasks(numTasks)
-        showDelete(numTasks)
-
         ++numTasks
     } 
 }
 
+//Gives priority buttons in form and in visible tasks functionality
+const priorityChooser = (()=>{
 
-//Creates Tasks sorters and contains their functionalities
-function tasksSorters(){
+    //Gives form the ability to choose priority
+    function formPriority(){
+        const high = document.getElementById("high")
+        const med = document.getElementById("medium")
+        const low = document.getElementById("low")
+        high.addEventListener("click",(e)=>{
 
-    //Sorts tasks based off selection
-    const contentSorter = document.createElement("div")
-    contentSorter.classList.add("contentSorter")
+            e.preventDefault()
+            removeChosen()
+            high.classList.add("chosenPriority")
+        })
+        med.addEventListener("click",(e)=>{
 
-    //Sorts by priority
-    const prioritySort = document.createElement("button")
-    const priorityImg = document.createElement("img")
-    priorityImg.setAttribute("src","https://seekicon.com/free-icon-download/list-stars_1.svg")
+            e.preventDefault()
+            removeChosen()
+            med.classList.add("chosenPriority")
+        })
+        low.addEventListener("click",(e)=>{
 
-    //Sorts alphabetically
-    const alphabeticallySort = document.createElement("button")
-    const alphabeticallyImg = document.createElement("img")
-    alphabeticallyImg.setAttribute("src","https://seekicon.com/free-icon-download/ordered-list_3.svg")
+            e.preventDefault()
+            removeChosen()
+            low.classList.add("chosenPriority")
+        })  
+    }   
 
-    //Sorts by oldest
-    const oldestSort = document.createElement("button")
-    const oldestImg = document.createElement("img")
-    oldestImg.setAttribute("src","https://static-00.iconduck.com/assets.00/sort-calendar-descending-icon-512x402-bgm72yjs.png")
-    //const oldestSort = document.createElement("button")
+    //Gives button ability to decide task priority
+    function removeChosen(){
 
-    prioritySort.appendChild(priorityImg)
-    alphabeticallySort.appendChild(alphabeticallyImg)
-    oldestSort.appendChild(oldestImg)
-
-    contentSorter.appendChild(prioritySort)
-    contentSorter.appendChild(alphabeticallySort)
-    contentSorter.appendChild(oldestSort)
-
-    content.appendChild(contentSorter)
-}
-
-//Creates form button for making new tasks
-function formButton(){
-
-    const formButton = document.createElement("button")
-    formButton.textContent = "+"
-    formButton.classList.add("formButton")
-
-    //Determines if a form is active when button is clicked
-    formButton.addEventListener("click",()=>{
-        if(formActive==true){
-            return
+        const prioDiv = document.getElementById("prioDiv")
+        for(let x = 0; x < prioDiv.length; ++x){
+            prioDiv[x].classList.remove("chosenPriority")
         }
-        else{
-            toDoFormCreator()
-               
-        }    
-    })
+    }
 
-    content.appendChild(formButton)
-}
+    //Gives task priority to visible task
+    function priorityView(taskNumber){
 
+        const tasks = document.querySelectorAll(".task")
+        for(let num = 0; num < tasksArray.length; ++num){
+    
+            if(tasksArray[num].taskNum == taskNumber){
+
+                let priorityChosen = tasksArray[num].taskPriority
+                if(priorityChosen == "High"){
+
+                    tasks[num].childNodes[0].classList.add("high")
+                }
+                else if(priorityChosen == "Med"){
+
+                    tasks[num].childNodes[0].classList.add("medium")
+                }
+                else if(priorityChosen == "Low"){
+
+                    tasks[num].childNodes[0].classList.add("low")
+                }
+            }
+        }
+    }
+
+    return{
+        formPriority,
+        priorityView
+    }
+})()
 
 
 //Creates object with given task info
-function taskContents(name, desc, num){
+function taskContents(name, desc, num, priority){
 
     let taskName = name
     let taskDesc = desc
     let taskNum = num
     let taskPlaced = false
+    let taskPriority = priority
 
     return{
         taskName,
         taskDesc,
         taskNum,
-        taskPlaced
+        taskPlaced,
+        taskPriority
     }
 }
 
-//Displays tasks to content area
-function tasksDisplay(){
-    
-    const tasksArea = document.querySelector(".tasksArea")
-    const task = document.createElement("div")
-    for(let task = 0; task < tasksArray.length; ++task){
-        task.appendChild(deleteTasks)
-        task.appendChild(checkbox)
-        task.appendChild(taskName)
-        //task.appendChild(taskDesc)//temporary
-        tasksArea.appendChild(task)
-        viewTasks()
+
+const tasksOnContent = (()=>{
+
+    //Displays tasks to content area
+    function showDisplay(){
+        
+        for(let num = 0; num < tasksArray.length; ++num){
+
+            addTaskToHtml()
+        }
     }
 
-}
+    function clearDisplay(){
+        const tasks = document.querySelectorAll(".task")
+        for(let num = 0; num < tasksArray.length; ++num){
+
+            tasks[num].remove()
+            tasksArray[num].taskPlaced = false
+        }
+    }
+
+    return{
+
+        showDisplay,
+        clearDisplay
+    }
+
+})()
 
 
-//Creates visible task with its element's properties
+
+//Logic for basic task creation(aka the next task after submission)
 function addTaskToHtml(){
 
-    const tasksArea = document.querySelector(".tasksArea")
+    
     for(let num = 0; num < tasksArray.length; ++num){
 
         //Only creates task if it has not been placed
         let selectedTask = tasksArray[num]
         if(selectedTask.taskPlaced == false){
 
-            //Creates task with identifier
-            const task = document.createElement("div")
-            task.classList.add("task")
-            let numPlacement = selectedTask.taskNum
-            task.setAttribute("data-key", numPlacement)
-            
-            //Task info in HTML
-            const checkbox = document.createElement("button")
-            checkbox.classList.add("checkbox")
-
-            const taskName = document.createElement("h2")
-            taskName.textContent = selectedTask.taskName
-
-            const taskDesc = document.createElement("div")
-            taskDesc.textContent = selectedTask.taskDesc
-
-            //Delete button will appear when hovering
-            const deleteTask = document.createElement("button")
-            deleteTask.textContent = "X"
-            deleteTask.classList.add("delete")
-                
-            task.appendChild(deleteTask)
-            task.appendChild(checkbox)
-            task.appendChild(taskName)
-            //task.appendChild(taskDesc)//temporary
-            tasksArea.appendChild(task)
-            
-            viewTasks(selectedTask)
-            selectedTask.taskPlaced = true
-
+            taskCreation(selectedTask)
         }
     }      
+}
+
+//Does DOM manipulation of task creation
+function taskCreation(selectedTask){
+
+    const tasksArea = document.querySelector(".tasksArea")
+
+    //Creates task with identifier
+    const task = document.createElement("div")
+    task.classList.add("task")
+    let numPlacement = selectedTask.taskNum
+    task.setAttribute("data-key", numPlacement)
+      
+    //Task info in HTML
+    const checkbox = document.createElement("button")
+    checkbox.classList.add("checkbox")
+
+    const priorityBar = document.createElement("div")
+    priorityBar.classList.add("priorityBar")
+
+    const taskName = document.createElement("h2")
+    taskName.textContent = selectedTask.taskName
+
+    const taskDesc = document.createElement("div")
+    taskDesc.textContent = selectedTask.taskDesc
+
+    //Delete button will appear when hovering
+    const deleteTask = document.createElement("button")
+    deleteTask.textContent = "X"
+    deleteTask.classList.add("delete")
+      
+    task.appendChild(priorityBar)
+    task.appendChild(deleteTask)
+    task.appendChild(checkbox)
+    task.appendChild(taskName)
+    tasksArea.appendChild(task)
+
+    //Task feature activations
+    viewTasks(selectedTask)
+    checklist(numPlacement)
+    deleteTasks(numPlacement)
+    showDelete(numPlacement)
+    priorityChooser.priorityView(numPlacement)
+    selectedTask.taskPlaced = true
+      
 }
 
 //Gives view full task ability to task
@@ -278,30 +359,44 @@ function viewTasks(selectedTask){
 function createViewDiv(taskName, taskDesc, taskNum){
     
     const fullTask = document.createElement("div")
-    fullTask.setAttribute("id", "viewBox")
+    fullTask.id = "viewBox"
     fullTask.setAttribute("viewBox-key", taskNum)
 
     const viewTitle = document.createElement("h2")
-    viewTitle.setAttribute("id","viewTitle")
-    viewTitle.setAttribute("contenteditable","true")
+    viewTitle.id = "viewTitle"
+    viewTitle.setAttribute("contentEditable",true)
     viewTitle.textContent = taskName
 
     const viewDesc = document.createElement("div")
-    viewDesc.setAttribute("id","viewDesc")
-    viewDesc.setAttribute("contenteditable","true")
+    viewDesc.id = "viewDesc"
+    viewDesc.setAttribute("contentEditable",true)
     viewDesc.textContent = taskDesc
-
         
     fullTask.appendChild(viewTitle)
     fullTask.appendChild(viewDesc)
     content.appendChild(fullTask)
-}
-
-//Gives edited task data to the 
-function applyEdit(){
 
 }
 
+//Changes task data
+function applyEdit(taskID){
+
+    const tasks = document.querySelectorAll(".task")
+    const viewTitle = document.getElementById("viewTitle").textContent
+    const viewDesc = document.getElementById("viewDesc").textContent
+    
+    for(let num = 0; num < tasksArray.length; ++num){
+        
+        //Changes content of task within html and task array
+        if(tasksArray[num].taskNum == taskID){
+
+            tasksArray[num].taskName = viewTitle
+            tasksArray[num].taskDesc = viewDesc
+
+            tasks[num].childNodes[3].textContent = viewTitle
+        }
+    }
+}
 
 //Remove viewing class
 document.addEventListener("click",(e)=>{ 
@@ -314,7 +409,7 @@ document.addEventListener("click",(e)=>{
 
         return
     }
-    else if( inView == true ) {
+    else if( inView == true && tasksArray.length > 0) {
             
         removeViewDiv()
     }
@@ -325,6 +420,8 @@ function removeViewDiv(){
         
     //removes viewBox from HTML
     const viewBox = document.getElementById("viewBox")
+    let taskID = viewBox.getAttribute("viewBox-key")
+        applyEdit(taskID)
     viewBox.remove()
 
     //removes inViewing class
@@ -333,20 +430,30 @@ function removeViewDiv(){
         task.classList.remove("inViewing")
     })
     inView = false
+
 }
 
 //Checklist ability
-function checklist(){
+function checklist(taskNumber){
 
     const checkboxes = document.querySelectorAll(".checkbox")
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("click",(e)=>{
+    const tasks = document.querySelectorAll(".task")
+    for(let num = 0; num < tasksArray.length; ++num){
 
-            checkbox.classList.toggle("checked")
-            e.stopImmediatePropagation()
-        })
+        if(tasksArray[num].taskNum == taskNumber){
 
-    })
+            checkboxes[num].addEventListener("click",(e)=>{
+                tasks[num].classList.toggle("checkedTask")
+                checkboxes[num].classList.toggle("checked")
+
+                // const checkMark = document.createElement("img")
+                // checkMark.setAttribute("src","https://banner2.cleanpng.com/20180605/uhx/kisspng-stock-photography-check-mark-right-sign-5b163039852792.1370523815281807935454.jpg")
+                // checkMark.classList.toggle("checkMark")
+
+                e.stopImmediatePropagation()
+            })
+        }
+    }
 }
 
 //Adds task deletability
@@ -358,9 +465,10 @@ function deleteTasks(taskNumber){
         if(tasksArray[num].taskNum == taskNumber){
 
             const deleteButtons = document.querySelectorAll(".delete")  
-            deleteButtons[num].addEventListener("click",()=>{
+            deleteButtons[num].addEventListener("click",(e)=>{
                 
                 //removes from array and from DOM
+                e.stopImmediatePropagation()
                 let focusedTask = deleteButtons[num].closest(".task")
     
                 tasksArray.splice(num,1)      
@@ -377,7 +485,6 @@ function deleteTasks(taskNumber){
             })
         }
     }
-
 }
 
 //Shows and Hides delete button

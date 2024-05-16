@@ -2,6 +2,7 @@
     padding:0;
     margin:0;
     font-family: 'Comfortaa', cursive;
+    
 }
 
 
@@ -10,28 +11,29 @@
     grid-template: 200px 1fr 40px/ 350px 1fr;
     height:100vh;
     width: 100vw;
-
+    background-color: #EFDECD;
 }
 
 .header{
     display:flex;
     grid-area: 1/1/2/3;
-    background-color: rgb(243, 166, 140);
+    background-color: #FCA858;
     padding: 10px 20px;
     font-size: 2.5rem;
     align-items: center;
-
+    color: #EFDECD;
 }
 
 .sidebar{
     grid-area: 2/1/3/2;
-    background-color: rgb(224, 104, 104);/*rgb(54, 41, 41)*/
+    background-color: #B87333;/*rgb(54, 41, 41)*/
     display:flex;
     flex-direction: column;
     width: calc(100% - 50px);
     height: 100%;
     padding-left: 20px;
     padding-top: 20px ;
+    color: #EFDECD;
     
 }
 
@@ -44,9 +46,10 @@
     text-align: left;
     padding-left: 10px;
     font-size: 2rem;
+    color: #EFDECD;
 }
 .sidebar button:hover{
-    background-color: rgb(236, 152, 152);
+    background-color: #FCA858;
     font-size: 2.3rem;
     
 }
@@ -60,6 +63,7 @@
 .contentTitle{
     grid-area: 1/1/2/2;
     font-size: 3rem;
+    color: #B87333;
 }
 .contentSorter{
     grid-area: 1/2/2/3;
@@ -68,6 +72,7 @@
     width: 700px;
     height: 50px;
     justify-content: flex-end;
+    
 }
 .contentSorter button{
     height: 40px;
@@ -75,9 +80,13 @@
     padding:10px;
     box-shadow: 2px 2px 2px gray;
     border: none;
+    background-color:#FCA858;
+    color: #B87333;
+    
 }
 .contentSorter button:hover{
-    background-color: rgb(204, 204, 204);
+    background-color: #ffb977;
+
 }
 .contentSorter img{
     height: 20px;
@@ -95,17 +104,18 @@
 .toDoForm{
     width:300px;
     height:400px;
-    background-color: rgb(255, 117, 117);
+    background-color: #FCA858;
     padding: 10px;
     position:absolute;
     left:1000px;
+    border: solid black 3px;
 }
 input{
     border:none;
-    background-color: rgb(255, 195, 195);
+    background-color: #EFDECD;
 }
 textarea{
-    background-color: rgb(255, 195, 195);
+    background-color: #EFDECD;
     max-width: 300px;
     max-height: 300px;
 }
@@ -125,6 +135,8 @@ fieldset{
     position:absolute;
     left:1000px;
     border: none;
+    background-color: #FCA858;
+    color: #EFDECD;
 }
 
 /*Task properties*/
@@ -133,29 +145,40 @@ fieldset{
     width: 600px;
     height:60px;
     display:grid;
-    grid-template-columns: 40px 300px 150px 1fr;
-    color:blue;
-    background-color: rgb(235, 235, 235);
+    grid-template-columns: 70px 300px 120px 1fr;
+    color: #CCD7C5;
+    background-color: #B87333;
     box-shadow: 2px 2px rgb(192, 192, 192);
     align-items: center;
     padding:10px;
     margin-left:100px;
     margin-bottom: 10px;
+    border-radius:2px;
 }
 
+/* Checkbox */
 .checkbox{
     height:20px;
     width: 20px;
-    border-radius: 100%;
+    border-radius: 30%;
+    margin-right:100px;
 }
 .checked{
-    background-color: red;
+    background-color: green;
 
 }
+.checkMark{
+    visibility: hidden;
+}
+.checkedTask{
+    text-decoration: line-through;
+}
+
+/* Delete */
 .delete{
     width: 35px;
     height: 35px;
-    color: white;
+    color: #CCD7C5;
     background-color: rgb(199, 0, 0);
     left:600px;
     position:absolute;
@@ -176,13 +199,39 @@ fieldset{
 
 }
 
-/*Edit*/
-.inEditing{
-    border: solid 2px black;
+/* Priority Button Colors */
+#high, 
+.high{
+    background-color: rgb(253, 34, 34);
 }
-#editBox{
+#medium, 
+.medium{
+    background-color: rgb(243, 243, 0);
+}
+#low,
+.low{
+    background-color: rgb(0, 159, 0);
+}
 
+#high:focus{
+    background-color: rgb(255, 60, 60);
+} 
+#medium:focus{
+    background-color: rgb(255, 255, 31);
+} 
+#low:focus{
+    background-color: rgb(0, 185, 0);
+} 
+
+.priorityBar{
+    position: absolute;
+    height: 60px;
+    width: 15px;
+    z-index: 5;
+    left:50px;
+    border-radius: 3px;
 }
+
 
 /*View*/
 .inViewing{
@@ -218,8 +267,7 @@ fieldset{
     word-break:break-all;
 }
 
-
-
+/*Footer*/
 .footer{
     grid-area: 3/1/4/3;
     background-color: black;
