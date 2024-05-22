@@ -117,38 +117,24 @@ function projectViewing(project){ ///STILL NEEDS WORK
         if(projectArray[num].projectNum == project.projectNum){
             projects[num].addEventListener("click",()=>{
                 
-
                 displayProjectTasks.addTasks()
             })
         }
     }
 }
 
-//Decides which project task array the task goes to
-function taskArrayLocation(){
+//Decides which project task array the task goes into
+function taskArrayLocation(task){
     
+    const chosenProject = document.querySelector(".projectChosen")
     
-
-     
+    for(let projNum = 0; projNum < projectArray.length; ++projNum){
+        if(chosenProject && (projectArray[projNum].projectNum == chosenProject.getAttribute("project-key"))){
+            projectArray[projNum].projectTasks.push(task)
+        }
+    }
+    
 }
 
-const displayProjectTasks = (()=>{
-
-    function addTasks(){
-
-        // for(){
-
-        // }
-    }
-
-    function removeTasks(){
-        
-    }
-
-    return{
-        addTasks,
-        removeTasks
-    }
-})()
 
 

@@ -1,7 +1,7 @@
 //Creates tasks
 //Controls the tasks on To-Do
 import { addYears, formatWithOptions } from "date-fns/fp";
-import { taskArrayLocation} from "./projects.js"
+import { projectArray, taskArrayLocation} from "./projects.js"
 export {toDoFormCreator, tasksOnContent}
 export const tasksArray = []
 export let formActive = false
@@ -106,7 +106,7 @@ function toDoFormCreator(){
 // Removes form
 function toDoFormRemover(){
     formActive = false
-    const form = document.querySelector("form").remove()
+    document.querySelector("form").remove()
 }
 
 //Requires Task name before allowing a submission
@@ -123,7 +123,7 @@ function requireName(){
         let task = taskContents(taskNameInput.value, taskDescInput.value, numTasks, priority)
         tasksArray.push(task)
 
-        taskArrayLocation()
+        taskArrayLocation(task)
         toDoFormRemover()
         addTaskToHtml() 
         ++numTasks
@@ -171,25 +171,60 @@ const priorityChooser = (()=>{
     function priorityView(taskNumber){
 
         const tasks = document.querySelectorAll(".task")
-        for(let num = 0; num < tasksArray.length; ++num){
+        const chosenProject = document.querySelector(".projectChosen")
+
+        if(chosenProject){
+            //loops through projects
+            for(let projNum = 0; projNum < projectArray.length; ++projNum){
+                if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
     
-            if(tasksArray[num].taskNum == taskNumber){
+                    //Loops through project tasks
+                    for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+                        if(projectArray[projNum].projectTasks[num].taskNum == taskNumber){
 
-                let priorityChosen = tasksArray[num].taskPriority
-                if(priorityChosen == "High"){
+                            if(projectArray[projNum].projectTasks[num].taskNum == taskNumber){
 
-                    tasks[num].childNodes[0].classList.add("high")
-                }
-                else if(priorityChosen == "Med"){
-
-                    tasks[num].childNodes[0].classList.add("medium")
-                }
-                else if(priorityChosen == "Low"){
-
-                    tasks[num].childNodes[0].classList.add("low")
+                                let priorityChosen = projectArray[projNum].projectTasks[num].taskPriority
+                                if(priorityChosen == "High"){
+                
+                                    tasks[num].childNodes[0].classList.add("high")
+                                }
+                                else if(priorityChosen == "Med"){
+                
+                                    tasks[num].childNodes[0].classList.add("medium")
+                                }
+                                else if(priorityChosen == "Low"){
+                
+                                    tasks[num].childNodes[0].classList.add("low")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+        else{
+            for(let num = 0; num < tasksArray.length; ++num){
+        
+                if(tasksArray[num].taskNum == taskNumber){
+
+                    let priorityChosen = tasksArray[num].taskPriority
+                    if(priorityChosen == "High"){
+
+                        tasks[num].childNodes[0].classList.add("high")
+                    }
+                    else if(priorityChosen == "Med"){
+
+                        tasks[num].childNodes[0].classList.add("medium")
+                    }
+                    else if(priorityChosen == "Low"){
+
+                        tasks[num].childNodes[0].classList.add("low")
+                    }
+                }
+            }
+        }
+
     }
 
     return{
@@ -205,15 +240,16 @@ function taskContents(name, desc, num, priority){
     let taskName = name
     let taskDesc = desc
     let taskNum = num
-    let taskPlaced = false
     let taskPriority = priority
-
+    let checked = false
+    let taskPlaced = false
     return{
         taskName,
         taskDesc,
         taskNum,
         taskPlaced,
-        taskPriority
+        taskPriority,
+        checked
     }
 }
 
@@ -232,9 +268,10 @@ const tasksOnContent = (()=>{
     function clearDisplay(){
         const tasks = document.querySelectorAll(".task")
         for(let num = 0; num < tasksArray.length; ++num){
-
-            tasksArray[num].taskPlaced = false
-            tasks[num].remove()
+            if(tasks[num]){
+                tasksArray[num].taskPlaced = false
+                tasks[num].remove()
+            }
         }
     }
 
@@ -247,18 +284,36 @@ const tasksOnContent = (()=>{
 })()
 
 
-//Logic for basic task creation(aka the next task after submission)
+//Logic for task creation on page that chooses between project tasks and overall tasks displayal
 function addTaskToHtml(){
 
-    for(let num = 0; num < tasksArray.length; ++num){
+    const chosenProject = document.querySelector(".projectChosen")
+    //For displaying tasks in current project
+    if(chosenProject){
+        for(let numProj = 0; numProj < projectArray.length; ++numProj){
+            if(chosenProject.getAttribute("project-key") == projectArray[numProj].projectNum){
+                for(let numPTasks = 0; numPTasks < projectArray[numProj].projectTasks.length; ++numPTasks){
 
-        //Only creates task if it has not been placed
-        let selectedTask = tasksArray[num]
-        if(selectedTask.taskPlaced == false){
+                    if(projectArray[numProj].projectTasks[numPTasks].taskPlaced == false){
+                        taskCreation(projectArray[numProj].projectTasks[numPTasks])
+                    }
+                }
+            }
 
-            taskCreation(selectedTask)
         }
-    }      
+    }    
+    else{
+        //For displaying all tasks
+        for(let num = 0; num < tasksArray.length; ++num){
+
+            //Only creates task if it has not been placed
+            let selectedTask = tasksArray[num]
+            if(selectedTask.taskPlaced == false){
+
+                taskCreation(selectedTask)
+            }
+        }  
+    }
 }
 
 //Does DOM manipulation of task creation
@@ -275,6 +330,7 @@ function taskCreation(selectedTask){
     //Task info in HTML
     const checkbox = document.createElement("button")
     checkbox.classList.add("checkbox")
+
 
     const priorityBar = document.createElement("div")
     priorityBar.classList.add("priorityBar")
@@ -299,6 +355,7 @@ function taskCreation(selectedTask){
     //Task feature activations
     viewTasks(selectedTask)
     checklist(numPlacement)
+    checked(numPlacement)
     deleteTasks(numPlacement)
     showDelete(numPlacement)
     priorityChooser.priorityView(numPlacement)
@@ -382,19 +439,46 @@ function applyEdit(taskID){
     const tasks = document.querySelectorAll(".task")
     const viewTitle = document.getElementById("viewTitle").textContent
     const viewDesc = document.getElementById("viewDesc").textContent
-    
-    for(let num = 0; num < tasksArray.length; ++num){
+    const chosenProject = document.querySelector(".projectChosen")
+
+    if(chosenProject){
+        //loops through projects
+        for(let projNum = 0; projNum < projectArray.length; ++projNum){
+            if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
+
+                //Loops through project tasks
+                for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+
+                        //Changes content of task within html and task array
+                        if(projectArray[projNum].projectTasks[num].taskNum == taskID){
+
+                            projectArray[projNum].projectTasks[num].taskName = viewTitle
+                            projectArray[projNum].projectTasks[num].taskDesc = viewDesc
+
+                            tasks[num].childNodes[3].textContent = viewTitle
+                        }
+                }
+            }
+        }
+    }
+    else{
+        for(let num = 0; num < tasksArray.length; ++num){
         
-        //Changes content of task within html and task array
-        if(tasksArray[num].taskNum == taskID){
+            //Changes content of task within html and task array
+            if(tasksArray[num].taskNum == taskID){
 
-            tasksArray[num].taskName = viewTitle
-            tasksArray[num].taskDesc = viewDesc
+                tasksArray[num].taskName = viewTitle
+                tasksArray[num].taskDesc = viewDesc
 
-            tasks[num].childNodes[3].textContent = viewTitle
+                tasks[num].childNodes[3].textContent = viewTitle
+            }
         }
     }
 }
+
+    
+
+
 
 //Remove viewing class
 document.addEventListener("click",(e)=>{ 
@@ -431,25 +515,79 @@ function removeViewDiv(){
 
 }
 
-//Checklist ability
+//Checklist ability for tasks
 function checklist(taskNumber){
 
     const checkboxes = document.querySelectorAll(".checkbox")
     const tasks = document.querySelectorAll(".task")
-    for(let num = 0; num < tasksArray.length; ++num){
+    const chosenProject = document.querySelector(".projectChosen")
 
-        if(tasksArray[num].taskNum == taskNumber){
+    //adds checklist if a project task
+    if(chosenProject){
 
-            checkboxes[num].addEventListener("click",(e)=>{
-                tasks[num].classList.toggle("checkedTask")
-                checkboxes[num].classList.toggle("checked")
+        //loops through projects
+        for(let projNum = 0; projNum < projectArray.length; ++projNum){
+            if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
 
-                // const checkMark = document.createElement("img")
-                // checkMark.setAttribute("src","https://banner2.cleanpng.com/20180605/uhx/kisspng-stock-photography-check-mark-right-sign-5b163039852792.1370523815281807935454.jpg")
-                // checkMark.classList.toggle("checkMark")
+                //loops through project tasks
+                for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+                    if(projectArray[projNum].projectTasks[num].taskNum == taskNumber){
+            
+                        checkboxes[num].addEventListener("click",(e)=>{
+                            tasks[num].classList.toggle("checkedTask")
+                            checkboxes[num].classList.toggle("checked")
+                            projectArray[projNum].projectTasks[num].checked = !projectArray[projNum].projectTasks[num].checked
+                            e.stopImmediatePropagation()
+                        })
+                    }
+                }
+            }
+        }
+            
+    }
+    //For general tasks
+    else{
+        for(let num = 0; num < tasksArray.length; ++num){
+            if(tasksArray[num].taskNum == taskNumber){
 
-                e.stopImmediatePropagation()
-            })
+                checkboxes[num].addEventListener("click",(e)=>{
+                    tasks[num].classList.toggle("checkedTask")
+                    checkboxes[num].classList.toggle("checked")
+                    tasksArray[num].checked = !tasksArray[num].checked
+                    e.stopImmediatePropagation()
+                })
+            }
+        }
+    }
+}
+
+//Automatically displays checked if tasks has been checked
+function checked(taskNumber){
+
+    const chosenProject = document.querySelector(".projectChosen")
+    const checkboxes = document.querySelectorAll(".checkbox")
+
+    //adds checklist if a project task
+    if(chosenProject){
+
+        //loops through projects
+        for(let projNum = 0; projNum < projectArray.length; ++projNum){
+            if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
+
+                //loops through project tasks
+                for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+                    if((projectArray[projNum].projectTasks[num].taskNum == taskNumber) && (projectArray[projNum].projectTasks[num].checked == true)){
+                        checkboxes[num].classList.add("checked")
+                    }
+                }
+            }
+        }
+    }
+    else{
+        for(let num = 0; num < tasksArray.length; ++num){
+            if(tasksArray[num].taskNum == taskNumber && tasksArray[num].checked == true){
+                checkboxes[num].classList.add("checked")
+            }
         }
     }
 }
@@ -457,30 +595,65 @@ function checklist(taskNumber){
 //Adds task deletability
 function deleteTasks(taskNumber){
 
-    //finds task in DOM and in tasks array
-    for(let num = 0; num < tasksArray.length; ++num){
-
-        if(tasksArray[num].taskNum == taskNumber){
-
-            const deleteButtons = document.querySelectorAll(".delete")  
-            deleteButtons[num].addEventListener("click",(e)=>{
-                
-                //removes from array and from DOM
-                e.stopImmediatePropagation()
-                let focusedTask = deleteButtons[num].closest(".task")
+    const chosenProject = document.querySelector(".projectChosen")
     
-                tasksArray.splice(num,1)      
-                focusedTask.remove()
+    //finds task in DOM and in tasks array
+    if(chosenProject){
+        //loops through projects
+        for(let projNum = 0; projNum < projectArray.length; ++projNum){
+            if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
 
-                //removes viewbox if it matches task
-                if(inView == true){
-                    let viewBoxID = document.querySelector("#viewBox").getAttribute("viewBox-key")
-                    if(taskNumber == viewBoxID){
-                        removeViewDiv()
-                    }     
+                //Loops through project tasks
+                for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+                    if(projectArray[projNum].projectTasks[num].taskNum == taskNumber){
+
+                        const deleteButtons = document.querySelectorAll(".delete")  
+                        deleteButtons[num].addEventListener("click",(e)=>{
+                            
+                            //removes from array and from DOM
+                            e.stopImmediatePropagation()
+                            let focusedTask = deleteButtons[num].closest(".task")
+        
+                            tasksArray.splice(num,1)      
+                            focusedTask.remove()
+        
+                            //removes viewbox if it matches task
+                            if(inView == true){
+                                const viewBoxID = document.querySelector("#viewBox").getAttribute("viewBox-key")
+                                if(taskNumber == viewBoxID){
+                                    removeViewDiv()
+                                }     
+                            }
+                        })
+                    }
                 }
-                
-            })
+            }
+        }
+    }
+    else{
+        for(let num = 0; num < tasksArray.length; ++num){
+
+            if(tasksArray[num].taskNum == taskNumber){
+
+                const deleteButtons = document.querySelectorAll(".delete")  
+                deleteButtons[num].addEventListener("click",(e)=>{
+                    
+                    //removes from array and from DOM
+                    e.stopImmediatePropagation()
+                    let focusedTask = deleteButtons[num].closest(".task")
+
+                    tasksArray.splice(num,1)      
+                    focusedTask.remove()
+
+                    //removes viewbox if it matches task
+                    if(inView == true){
+                        const viewBoxID = document.querySelector("#viewBox").getAttribute("viewBox-key")
+                        if(taskNumber == viewBoxID){
+                            removeViewDiv()
+                        }     
+                    }
+                })
+            }
         }
     }
 }
@@ -490,22 +663,50 @@ function showDelete(taskNumber){
 
     const tasks = document.querySelectorAll(".task")
     const deleteButtons = document.querySelectorAll(".delete")  
-    for(let num = 0; num < tasksArray.length; ++num){
+    const chosenProject = document.querySelector(".projectChosen")
 
-        if(tasksArray[num].taskNum == taskNumber){
+    if(chosenProject){
+        //loops through projects
+        for(let projNum = 0; projNum < projectArray.length; ++projNum){
+            if(chosenProject.getAttribute("project-key") == projectArray[projNum].projectNum){
 
-            //removes from array and from DOM
-            tasks[num].addEventListener("mouseover",()=>{
+                //Loops through project tasks
+                for(let num = 0; num < projectArray[projNum].projectTasks.length; ++num){
+                    if(projectArray[projNum].projectTasks[num].taskNum == taskNumber){
 
-                deleteButtons[num].setAttribute("id","deleteVisible")
-            })
+                        //removes from array and from DOM
+                        tasks[num].addEventListener("mouseover",()=>{
 
-            //When not hovering task remove visibility
-            tasks[num].addEventListener("mouseout",()=>{
+                            deleteButtons[num].setAttribute("id","deleteVisible")
+                        })
 
-                deleteButtons[num].removeAttribute("id","deleteVisible")
-            })
+                        //When not hovering task remove visibility
+                        tasks[num].addEventListener("mouseout",()=>{
 
+                            deleteButtons[num].removeAttribute("id","deleteVisible")
+                        })
+                    }
+                }
+            }
+        }
+    }
+    else{
+        for(let num = 0; num < tasksArray.length; ++num){
+
+            if(tasksArray[num].taskNum == taskNumber){
+
+                //removes from array and from DOM
+                tasks[num].addEventListener("mouseover",()=>{
+
+                    deleteButtons[num].setAttribute("id","deleteVisible")
+                })
+
+                //When not hovering task remove visibility
+                tasks[num].addEventListener("mouseout",()=>{
+
+                    deleteButtons[num].removeAttribute("id","deleteVisible")
+                })
+            }
         }
     }
 }

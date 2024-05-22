@@ -28,23 +28,28 @@ const pageSelector = (()=>{
 
     //denotes current project selection
     function projectSelectorVisuals(button){
-        console.log("no")
         const projects = document.querySelectorAll(".project");
 
         //Removes the projectChosen class from all projects
-        for(var i = 0; i<projects.length; i++) {
-            projects[i].style.backgroundColor = "";
-            projects[i].classList.remove("projectChosen")
-        }
+        removeChosenProj()
         
         //Gives projectChosen class and changes background of chosen project
         for(var num = 0; num < projects.length; ++num){
             if(projects[num].getAttribute("project-key") == button.getAttribute("project-key")){
                 button.style.backgroundColor = "#FCA858"
                 button.classList.add("projectChosen")
+                tasksOnContent.clearDisplay()
             }
         }
+    }
 
+    //Removes the projectChosen class from all projects
+    function removeChosenProj(){
+        const projects = document.querySelectorAll(".project");
+        for(var i = 0; i<projects.length; i++) {
+            projects[i].style.backgroundColor = "";
+            projects[i].classList.remove("projectChosen")
+        }
     }
 
     //Denotes current page title on content area
@@ -61,8 +66,9 @@ const pageSelector = (()=>{
         tabTextChange()
 
         if(contentTitle.textContent == "To-Do"){
-
+            removeChosenProj()
             visibleProjectBar()
+            tasksOnContent.showDisplay()
             tasksPage.show()
             addProjectsButton.remove()
         }
@@ -80,6 +86,14 @@ const pageSelector = (()=>{
         }
     }
 
+    //Displays add task and task sorter as well as task for the selected project
+    function projectTaskPage(){
+        addProjectsButton.remove()
+        taskFormButton()
+        tasksSorters()
+        tasksOnContent.showDisplay()
+    }
+
     //Hides projects when project page is not selected
     function visibleProjectBar(){
         if(contentTitle.textContent == "Projects"){
@@ -93,7 +107,9 @@ const pageSelector = (()=>{
     return{
         buttonSelectorVisuals,
         pageContent,
-        projectSelectorVisuals
+        projectSelectorVisuals,
+        projectTaskPage,
+        removeChosenProj
 
     }
 })()
@@ -129,6 +145,7 @@ function addProjectSelectVisual(selectedProject){
 
             projectButs[num].addEventListener("click", ()=>{
                 pageSelector.projectSelectorVisuals(projectButs[num])
+                pageSelector.projectTaskPage()
             }
             )
         }
@@ -150,8 +167,7 @@ const tasksPage = (()=>{
 
     //Clears content sorter and form button
     function clear(){
-
-        if(document.querySelector(".contentSorter") && document.querySelector(".formButton")){
+        while(document.querySelector(".contentSorter") && document.querySelector(".formButton")){
             document.querySelector(".contentSorter").remove()
             document.querySelector(".formButton").remove()
         }
