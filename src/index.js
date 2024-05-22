@@ -3,10 +3,10 @@
 
 import "./style.css"
 import {toDoFormCreator, tasksArray, formActive, tasksOnContent} from "./tasks.js"
+import {projectCreator} from "./projects.js"
+export {addProjectSelectVisual}
 const content = document.querySelector(".content")
 
-//Calls all starting page content(To-Do list page)
-tasksPage()
 
 //Creates the sidebar functionality for color and title change. Also controls current page and its contents
 const sidebar = document.querySelector(".sidebar")
@@ -23,6 +23,28 @@ const pageSelector = (()=>{
 
         button.style.backgroundColor = "#FCA858"
         button.classList.add("contentTitleChosen")
+        pageSelector.pageContent()
+    }
+
+    //denotes current project selection
+    function projectSelectorVisuals(button){
+        console.log("no")
+        const projects = document.querySelectorAll(".project");
+
+        //Removes the projectChosen class from all projects
+        for(var i = 0; i<projects.length; i++) {
+            projects[i].style.backgroundColor = "";
+            projects[i].classList.remove("projectChosen")
+        }
+        
+        //Gives projectChosen class and changes background of chosen project
+        for(var num = 0; num < projects.length; ++num){
+            if(projects[num].getAttribute("project-key") == button.getAttribute("project-key")){
+                button.style.backgroundColor = "#FCA858"
+                button.classList.add("projectChosen")
+            }
+        }
+
     }
 
     //Denotes current page title on content area
@@ -39,20 +61,39 @@ const pageSelector = (()=>{
         tabTextChange()
 
         if(contentTitle.textContent == "To-Do"){
-            tasksPage()
 
+            visibleProjectBar()
+            tasksPage.show()
+            addProjectsButton.remove()
         }
-        else if(contentTitle.textContent == "Habits"){
+        else if(contentTitle.textContent == "Habits"){//NOT ACTIVE YET
 
+            // tasksPage.clear()
+            // tasksOnContent.clearDisplay()
+        }
+        else if(contentTitle.textContent == "Projects"){
+
+            visibleProjectBar()
+            tasksOnContent.clearDisplay()
+            tasksPage.clear() 
+            addProjectsButton.add()
+        }
+    }
+
+    //Hides projects when project page is not selected
+    function visibleProjectBar(){
+        if(contentTitle.textContent == "Projects"){
+            document.querySelector(".projectDiv").style.visibility = "visible"
         }
         else{
-
+            document.querySelector(".projectDiv").style.visibility = "hidden"
         }
     }
 
     return{
         buttonSelectorVisuals,
-        pageContent
+        pageContent,
+        projectSelectorVisuals
 
     }
 })()
@@ -62,38 +103,113 @@ const pageSelector = (()=>{
 //Sidebar buttons (This changes the look of the current tab and assigns which is the current tab)
 const tasksButton = document.querySelector(".tasksButton")
 tasksButton.addEventListener("click",()=>{
+
     pageSelector.buttonSelectorVisuals(tasksButton)
-    pageSelector.pageContent()
 })
 tasksButton.style.backgroundColor = "#FCA858"
 
 const habitsButton = document.querySelector(".habitsButton")
 habitsButton.addEventListener("click", ()=>{
-    pageSelector.buttonSelectorVisuals(habitsButton)
-    pageSelector.pageContent()
 
+    pageSelector.buttonSelectorVisuals(habitsButton)
 })    
 
 const projectsButton = document.querySelector(".projectsButton")
 projectsButton.addEventListener("click", ()=>{
-    pageSelector.buttonSelectorVisuals(projectsButton)
-    pageSelector.pageContent()
 
+    pageSelector.buttonSelectorVisuals(projectsButton)
 })
 
+//Adds the ability to visibly see the selction of the current project
+function addProjectSelectVisual(selectedProject){
+    const projectButs = document.querySelectorAll(".project")
 
-//Content current title appended to content
-const contentTitle = document.querySelector(".contentTitle")
-contentTitle.textContent = "To-Do"
+    for(let num = 0; num < projectButs.length; ++num){
+        if(selectedProject.projectNum == projectButs[num].getAttribute("project-key")){
 
-
+            projectButs[num].addEventListener("click", ()=>{
+                pageSelector.projectSelectorVisuals(projectButs[num])
+            }
+            )
+        }
+    }
+}
 
 //Adds task page specific functionalities
-function tasksPage(){
+const tasksPage = (()=>{
+    
+    //Shows content sorter and form button
+    function show(){
 
-    tasksSorters()
-    formButton()
+        if(!document.querySelector(".contentSorter") && !document.querySelector(".formButton")){
+            tasksSorters()
+            taskFormButton()
+            tasksOnContent.showDisplay()
+        }
+    }
 
+    //Clears content sorter and form button
+    function clear(){
+
+        if(document.querySelector(".contentSorter") && document.querySelector(".formButton")){
+            document.querySelector(".contentSorter").remove()
+            document.querySelector(".formButton").remove()
+        }
+    }
+
+    return{
+        show,
+        clear
+    }
+})()
+
+//Controls whether projects page content is visible
+const addProjectsButton = (()=>{
+
+    //Shows content sorter and form button
+    function add(){
+        if(!document.getElementById("projectForm")){
+            
+            projectCreator()    
+        }
+    }
+
+    //Clears project form 
+    function remove(){
+
+        if(document.getElementById("projectForm")){
+            const projectForm = document.getElementById("projectForm")
+            projectForm.remove()
+        }
+        
+    }
+    return{
+        add,
+        remove
+    }
+})()
+
+//Creates form button for making new tasks
+function taskFormButton(){
+
+    const formButton = document.createElement("button")
+    formButton.textContent = "+"
+    formButton.classList.add("formButton")
+
+    //Determines if a form is active when button is clicked
+    formButton.addEventListener("click",()=>{
+
+        if(formActive==true) {
+
+            return
+        }
+        else {
+
+            toDoFormCreator()
+        }    
+    })
+
+    content.appendChild(formButton)
 }
 
 //Creates Tasks sorters and contains their functionalities
@@ -177,26 +293,7 @@ const sortingLogic = (()=>{
 })()
 //////////////NOT YET WORKING/////////////////
 
-//Creates form button for making new tasks
-function formButton(){
-
-    const formButton = document.createElement("button")
-    formButton.textContent = "+"
-    formButton.classList.add("formButton")
-
-    //Determines if a form is active when button is clicked
-    formButton.addEventListener("click",()=>{
-
-        if(formActive==true) {
-
-            return
-        }
-        else {
-
-            toDoFormCreator()
-        }    
-    })
-
-    content.appendChild(formButton)
-}
-
+//Calls all starting page content(To-Do list page)
+tasksPage.show()
+const contentTitle = document.querySelector(".contentTitle")
+contentTitle.textContent = "To-Do"

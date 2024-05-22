@@ -1,6 +1,7 @@
 //Creates tasks
 //Controls the tasks on To-Do
 import { addYears, formatWithOptions } from "date-fns/fp";
+import { taskArrayLocation} from "./projects.js"
 export {toDoFormCreator, tasksOnContent}
 export const tasksArray = []
 export let formActive = false
@@ -118,14 +119,13 @@ function requireName(){
         taskNameInput.style.border = "solid 1px red"
     }
     else{
-        
         let priority = document.querySelector(".chosenPriority").textContent
         let task = taskContents(taskNameInput.value, taskDescInput.value, numTasks, priority)
         tasksArray.push(task)
-        toDoFormRemover() 
-        
 
-        addTaskToHtml()
+        taskArrayLocation()
+        toDoFormRemover()
+        addTaskToHtml() 
         ++numTasks
     } 
 }
@@ -233,8 +233,8 @@ const tasksOnContent = (()=>{
         const tasks = document.querySelectorAll(".task")
         for(let num = 0; num < tasksArray.length; ++num){
 
-            tasks[num].remove()
             tasksArray[num].taskPlaced = false
+            tasks[num].remove()
         }
     }
 
@@ -247,11 +247,9 @@ const tasksOnContent = (()=>{
 })()
 
 
-
 //Logic for basic task creation(aka the next task after submission)
 function addTaskToHtml(){
 
-    
     for(let num = 0; num < tasksArray.length; ++num){
 
         //Only creates task if it has not been placed
@@ -421,7 +419,7 @@ function removeViewDiv(){
     //removes viewBox from HTML
     const viewBox = document.getElementById("viewBox")
     let taskID = viewBox.getAttribute("viewBox-key")
-        applyEdit(taskID)
+    applyEdit(taskID)
     viewBox.remove()
 
     //removes inViewing class

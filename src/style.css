@@ -24,6 +24,7 @@
     color: #EFDECD;
 }
 
+/* Sidebar */
 .sidebar{
     grid-area: 2/1/3/2;
     background-color: #B87333;/*rgb(54, 41, 41)*/
@@ -37,7 +38,7 @@
     
 }
 
-.sidebar button{
+.pageDiv button{
     width:300px;
     background-color: rgba(0, 0, 0, 0);
     border: none;
@@ -48,12 +49,13 @@
     font-size: 2rem;
     color: #EFDECD;
 }
-.sidebar button:hover{
+.pageDiv button:hover{
     background-color: #FCA858;
     font-size: 2.3rem;
     
 }
 
+/* Content */
 .content{
     grid-area: 2/2/3/3;
     display:grid; 
@@ -195,11 +197,9 @@ fieldset{
 #deleteVisible{
     visibility: visible;
 }
-.date{
 
-}
 
-/* Priority Button Colors */
+/* Priority Buttons */
 #high, 
 .high{
     background-color: rgb(253, 34, 34);
@@ -267,7 +267,58 @@ fieldset{
     word-break:break-all;
 }
 
-/*Footer*/
+/* Projects */
+#projectForm{
+    height: 60px;
+    width: 350px;
+    grid-area: 1/2/2/3;
+    background-color: hsl(29, 96%, 67%);
+    border-radius: 5px;
+}
+#projectCreateButton{
+    height:40px;
+    width:40px;
+    background-color: #B87333;
+    border: none;
+    margin: 10px;
+    border-radius: 2px;
+    color:#CCD7C5;
+}
+#projectCreateButton:hover{
+    box-shadow: 1px 1px 1px rgb(42, 42, 42);
+}
+#projectNameInput{
+    height:20px;
+    width:250px;
+    background-color: white;
+    margin: 10px;
+
+}
+
+.project{
+    margin-left: 40px;
+    margin-bottom: -40px;
+    height: 40px; 
+    width: 255px;
+    padding: 5px;
+    background-color: #B87333;
+    border: none;
+    box-shadow: none;
+    text-align: left;
+    color: #EFDECD;
+    font-size: 1.3rem;
+}
+.project:hover{
+    background-color: #FCA858;
+    text-decoration: underline;
+    font-size: 1.5rem;
+    
+}
+
+
+
+
+/* Footer */
 .footer{
     grid-area: 3/1/4/3;
     background-color: black;
